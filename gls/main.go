@@ -5,9 +5,10 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 )
 
-func gls(path string) {
+func gls(path string, option string) {
 	// check file path
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		fmt.Println(path, "does not exist.")
@@ -21,14 +22,30 @@ func gls(path string) {
 	}
 
 	for _, file := range fileList {
+		if option != "all" {
+			if strings.HasPrefix(file.Name(), ".") {
+				continue
+			}
+		}
 		fmt.Println("\t", file.Name())
+	}
+}
+
+func check_options(option string) string {
+	switch option {
+	case "-a", "--all":
+		return "all"
+	default:
+		return "nil"
 	}
 }
 
 func main() {
 	path := os.Args[1]
+	option := check_options(os.Args[2])
 
-	fmt.Println("Input path: ", path)
+	fmt.Println("Input path  :", path)
+	fmt.Println("Input option:", option)
 	fmt.Println("outputs:")
-	gls(path)
+	gls(path, option)
 }
